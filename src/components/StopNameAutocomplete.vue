@@ -6,10 +6,9 @@
             :loading="loading"
             :label="label"
             :search-input.sync="sync"
-            cache-items
             hide-no-data
             hide-details
-            :debounce-search="5"/>
+            no-filter/>
 </template>
 
 <script>
@@ -40,13 +39,18 @@
         methods: {
             load(query) {
                 if (!this.loading) {
-                    this.loading = true
-                    StopsService.getStops(query)
-                        .then(stops => {
-                            clearArray(this.items)
-                            stops.forEach(item => this.items.push(item))
-                        })
-                        .finally(() => this.loading = false)
+                    if (!query) {
+                        clearArray(this.items)
+                    }
+                    else {
+                        this.loading = true
+                        StopsService.getStops(query)
+                            .then(stops => {
+                                clearArray(this.items)
+                                stops.forEach(item => this.items.push(item))
+                            })
+                            .finally(() => this.loading = false)
+                    }
                 }
             }
         }
