@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import ConnectionSearchView, {CONNECTION_SEARCH_VIEW} from '../view/routes/ConnectionSearchView'
+import ConnectionResultsView, {CONNECTION_RESULTS_VIEW} from '../view/routes/ConnectionResultsView'
 
 Vue.use(Router)
 
@@ -11,6 +12,11 @@ export default new Router({
         path: '/',
         name: CONNECTION_SEARCH_VIEW,
         component: ConnectionSearchView,
+        props: true
+    }, {
+        path: '/results/:from/:to',
+        name: CONNECTION_RESULTS_VIEW,
+        component: ConnectionResultsView,
         props: true
     }]
 })

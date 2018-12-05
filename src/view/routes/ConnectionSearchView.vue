@@ -9,22 +9,19 @@
                     Wyszukaj połączeń
                 </span>
             </v-toolbar-title>
-            <v-progress-linear v-if="progress"
-                               slot="extension"
-                               :indeterminate="true"
-                               color="white"
-                               class="ma-0"/>
         </v-toolbar>
         <v-content>
             <v-container fluid>
                 <v-layout wrap>
                     <v-flex xs12>
                         <stop-name-autocomplete label="Stacja początkowa"
-                                                v-model="fromStop"/>
+                                                :value="fromStop"
+                                                @input="setFrom($event)"/>
                     </v-flex>
                     <v-flex xs12>
                         <stop-name-autocomplete label="Stacja końcowa"
-                                                v-model="toStop"/>
+                                                :value="toStop"
+                                                @input="setTo($event)"/>
                     </v-flex>
                 </v-layout>
             </v-container>
@@ -32,6 +29,7 @@
                 <v-layout wrap>
                     <v-flex xs12>
                         <v-btn @click="search"
+                               :disabled="!canSearch"
                                block
                                large
                                color="secondary">
@@ -40,46 +38,52 @@
                     </v-flex>
                 </v-layout>
             </v-container>
-            <v-container>
-                <div class="code-container">
-                    <pre v-highlightjs="result">
-                        <code class="javascript"></code>
-                    </pre>
-                </div>
-            </v-container>
         </v-content>
     </div>
 </template>
 
 <script>
     import StopNameAutocomplete from "../../components/StopNameAutocomplete";
-    import ConnectionsService from "../../services/ConnectionsService";
-    import VueHighlightJS from 'vue-highlightjs'
-    import Vue from 'vue'
+    import {CONNECTION_RESULTS_VIEW} from './ConnectionResultsView'
+    import {addQueryParams} from "../../router/routerUtils";
 
     export const CONNECTION_SEARCH_VIEW = "ConnectionSearchView"
-
-    Vue.use(VueHighlightJS)
 
     export default {
         name: 'ConnectionSearchView',
         components: {StopNameAutocomplete},
 
-        data: () => ({
-            progress: false,
-            fromStop: null,
-            toStop: null,
-            result: ''
-        }),
+        computed: {
+            canSearch() {
+                return this.fromStop && this.toStop
+            },
+
+            fromStop() {
+                return this.$route.query.from
+            },
+
+            toStop() {
+                return this.$route.query.to
+            }
+        },
 
         methods: {
+            setFrom(from) {
+                addQueryParams({from})
+            },
+
+            setTo(to) {
+                addQueryParams({to})
+            },
+
             search() {
-                if (this.fromStop && this.toStop) {
-                    ConnectionsService.find(this.fromStop, this.toStop)
-                        .then(connection => {
-                            this.result = JSON.stringify(connection, null, 2)
-                        })
-                }
+                this.$router.push({
+                    name: CONNECTION_RESULTS_VIEW,
+                    params: {
+                        from: this.fromStop,
+                        to: this.toStop
+                    }
+                })
             }
         }
     }

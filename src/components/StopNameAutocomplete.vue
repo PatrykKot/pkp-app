@@ -26,6 +26,12 @@
             timerId: null
         }),
 
+        created() {
+            if (this.value) {
+                this.load(this.value)
+            }
+        },
+
         watch: {
             sync(val) {
                 let me = this
