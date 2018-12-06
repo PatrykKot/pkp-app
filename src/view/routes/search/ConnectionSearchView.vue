@@ -54,6 +54,7 @@
 
     const FROM_KEY = 'fromHistory'
     const TO_KEY = 'toHistory'
+    const MAX_STOPS_HINT_COUNT = 3
 
     export default {
         name: 'ConnectionSearchView',
@@ -91,8 +92,8 @@
             },
 
             search() {
-                LimitedArrayStorage.put(this.fromKey, this.fromStop)
-                LimitedArrayStorage.put(this.toKey, this.toStop)
+                LimitedArrayStorage.put(this.fromKey, this.fromStop, MAX_STOPS_HINT_COUNT)
+                LimitedArrayStorage.put(this.toKey, this.toStop, MAX_STOPS_HINT_COUNT)
 
                 this.$router.push({
                     name: CONNECTION_RESULTS_VIEW,
