@@ -16,11 +16,13 @@
                     <v-flex xs12>
                         <stop-name-autocomplete label="Stacja początkowa"
                                                 :value="fromStop"
+                                                :storage-key="fromKey"
                                                 @input="setFrom($event)"/>
                     </v-flex>
                     <v-flex xs12>
                         <stop-name-autocomplete label="Stacja końcowa"
                                                 :value="toStop"
+                                                :storage-key="toKey"
                                                 @input="setTo($event)"/>
                     </v-flex>
                 </v-layout>
@@ -43,11 +45,15 @@
 </template>
 
 <script>
-    import StopNameAutocomplete from "../../components/StopNameAutocomplete";
-    import {CONNECTION_RESULTS_VIEW} from './ConnectionResultsView'
-    import {addQueryParams} from "../../router/routerUtils";
+    import StopNameAutocomplete from "./StopNameAutocomplete";
+    import {CONNECTION_RESULTS_VIEW} from '../results/ConnectionResultsView'
+    import {addQueryParams} from "../../../router/routerUtils";
+    import LimitedArrayStorage from "../../../services/LimitedArrayStorage";
 
     export const CONNECTION_SEARCH_VIEW = "ConnectionSearchView"
+
+    const FROM_KEY = 'fromHistory'
+    const TO_KEY = 'toHistory'
 
     export default {
         name: 'ConnectionSearchView',
@@ -64,6 +70,14 @@
 
             toStop() {
                 return this.$route.query.to
+            },
+
+            fromKey() {
+                return FROM_KEY
+            },
+
+            toKey() {
+                return TO_KEY
             }
         },
 
@@ -77,6 +91,9 @@
             },
 
             search() {
+                LimitedArrayStorage.put(this.fromKey, this.fromStop)
+                LimitedArrayStorage.put(this.toKey, this.toStop)
+
                 this.$router.push({
                     name: CONNECTION_RESULTS_VIEW,
                     params: {

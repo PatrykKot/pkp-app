@@ -12,12 +12,13 @@
 </template>
 
 <script>
-    import StopsService from "../services/StopsService";
-    import {clearArray} from "../util/arrayUtil";
+    import StopsService from "../../../services/StopsService";
+    import {clearArray} from "../../../util/arrayUtil";
+    import LimitedArrayStorage from "../../../services/LimitedArrayStorage";
 
     export default {
         name: "StopNameAutocomplete",
-        props: ['value', 'label'],
+        props: ['value', 'label', 'storageKey'],
 
         data: () => ({
             items: [],
@@ -27,9 +28,7 @@
         }),
 
         created() {
-            if (this.value) {
-                this.load(this.value)
-            }
+            this.load(this.value)
         },
 
         watch: {
@@ -45,10 +44,7 @@
         methods: {
             load(query) {
                 if (!this.loading) {
-                    if (!query) {
-                        clearArray(this.items)
-                    }
-                    else {
+                    if (query && query.trim()) {
                         this.loading = true
                         StopsService.getStops(query)
                             .then(stops => {
@@ -56,6 +52,11 @@
                                 stops.forEach(item => this.items.push(item))
                             })
                             .finally(() => this.loading = false)
+                    }
+                    else {
+                        let storageItems = LimitedArrayStorage.getAll(this.storageKey)
+                        clearArray(this.items)
+                        storageItems.forEach(item => this.items.push(item))
                     }
                 }
             }

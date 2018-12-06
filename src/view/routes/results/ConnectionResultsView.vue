@@ -33,9 +33,9 @@
 </template>
 
 <script>
-    import ConnectionsService from "../../services/ConnectionsService";
-    import {clearArray} from "../../util/arrayUtil";
-    import RouteInfo from "../../components/RouteInfo";
+    import ConnectionsService from "../../../services/ConnectionsService";
+    import {clearArray} from "../../../util/arrayUtil";
+    import RouteInfo from "./RouteInfo";
 
     export const CONNECTION_RESULTS_VIEW = "ConnectionResultsView"
 

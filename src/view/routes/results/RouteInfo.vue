@@ -36,7 +36,7 @@
 </template>
 
 <script>
-    import {formatDate} from "../util/dateUtils";
+    import {formatDate} from "../../../util/dateUtils";
     import TrainRouteInfo from "./TrainRouteInfo";
 
     export default {
